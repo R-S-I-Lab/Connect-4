@@ -17,12 +17,12 @@ function createGame(button) {
     button.setAttribute("onclick", "window.location.reload()");
     const gameField = addAttributes(document.createElement("div"),
         ["style", "justify-content:center; display:grid;" +
-        "grid-template-columns:repeat(7, 75px)"]);
+        " grid-template-columns:repeat(7, 75px)"]);
     container.appendChild(gameField);
     for (let i = 0; i < lines; ++i) {
         for (let j = 0; j < columns; ++j) {
             const button = addAttributes(document.createElement("button"),
-                ["type", "button", "class", "button", "id", i + "," + j,
+                ["type", "button", "class", "button", "id", `${i},${j}`,
                 "onclick", "markButton(this)"]);
             gameField.appendChild(button);
         }
@@ -36,42 +36,29 @@ function checkConnect(disc1, disc2, disc3, disc4) {
         && disc1.style.backgroundColor === disc4.style.backgroundColor;
 }
 
+function checkDirections(i, j, direction) {
+    const discs = [];
+    for (let k = 0; k < 4; ++k) {
+        const row = i + k * direction[0];
+        const col = j + k * direction[1];
+        const id = `${row},${col}`;
+        const disc = document.getElementById(id);
+        if (disc) {
+            discs[k] = disc;
+        }
+    }
+    return discs.length === 4
+        && checkConnect(discs[0], discs[1], discs[2], discs[3]);
+}
+
 function checkWinner() {
+    const directions = [
+        [0, 1], [1, 0], [1, 1], [1, -1],
+    ];
     for (let i = 0; i < lines; ++i) {
         for (let j = 0; j < columns; ++j) {
-            if (j + 3 < columns) {
-                const disc1 = document.getElementById(i + "," + j);
-                const disc2 = document.getElementById(i + "," + (j + 1));
-                const disc3 = document.getElementById(i + "," + (j + 2));
-                const disc4 = document.getElementById(i + "," + (j + 3));
-                if (checkConnect(disc1, disc2, disc3, disc4)) {
-                    gameOver = true;
-                }
-            }
-            if (i + 3 < lines) {
-                const disc1 = document.getElementById(i + "," + j);
-                const disc2 = document.getElementById((i + 1) + "," + j);
-                const disc3 = document.getElementById((i + 2) + "," + j);
-                const disc4 = document.getElementById((i + 3) + "," + j);
-                if (checkConnect(disc1, disc2, disc3, disc4)) {
-                    gameOver = true;
-                }
-            }
-            if (i + 3 < lines && j + 3 < columns) {
-                const disc1 = document.getElementById(i + "," + j);
-                const disc2 = document.getElementById((i + 1) + "," + (j + 1));
-                const disc3 = document.getElementById((i + 2) + "," + (j + 2));
-                const disc4 = document.getElementById((i + 3) + "," + (j + 3));
-                if (checkConnect(disc1, disc2, disc3, disc4)) {
-                    gameOver = true;
-                }
-            }
-            if (i + 3 < lines && j - 3 >= 0) {
-                const disc1 = document.getElementById(i + "," + j);
-                const disc2 = document.getElementById((i + 1) + "," + (j - 1));
-                const disc3 = document.getElementById((i + 2) + "," + (j - 2));
-                const disc4 = document.getElementById((i + 3) + "," + (j - 3));
-                if (checkConnect(disc1, disc2, disc3, disc4)) {
+            for (let d = 0; d < directions.length && !gameOver; ++d) {
+                if (checkDirections(i, j, directions[d])) {
                     gameOver = true;
                 }
             }
@@ -97,9 +84,9 @@ function markButton(button) {
         return;
     }
     if (turn % 2) {
-        button.setAttribute("style", "background-color:yellowgreen");
+        button.style.backgroundColor = "yellowgreen";
     } else {
-        button.setAttribute("style", "background-color:darkred");
+        button.style.backgroundColor = "darkred";
     }
     ++turn;
     button.setAttribute("disabled", "true");
