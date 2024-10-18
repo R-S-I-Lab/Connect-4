@@ -23,7 +23,7 @@ function createGame(button) {
         for (let j = 0; j < columns; ++j) {
             const button = addAttributes(document.createElement("button"),
                 ["type", "button", "class", "button", "id", `${i},${j}`,
-                    "onclick", "markButton(this)"]);
+                "onclick", "markButton(this)"]);
             gameField.appendChild(button);
         }
     }
