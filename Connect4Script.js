@@ -23,32 +23,31 @@ function createGame(button) {
         for (let j = 0; j < columns; ++j) {
             const button = addAttributes(document.createElement("button"),
                 ["type", "button", "class", "button", "id", `${i},${j}`,
-                "onclick", "markButton(this)"]);
+                    "onclick", "markButton(this)"]);
             gameField.appendChild(button);
         }
     }
 }
 
-function checkConnect(disc1, disc2, disc3, disc4) {
-    return disc1.style.backgroundColor
-        && disc1.style.backgroundColor === disc2.style.backgroundColor
-        && disc1.style.backgroundColor === disc3.style.backgroundColor
-        && disc1.style.backgroundColor === disc4.style.backgroundColor;
+function checkConnect(discs) {
+    return discs[0].style.backgroundColor
+        && discs[0].style.backgroundColor === discs[1].style.backgroundColor
+        && discs[0].style.backgroundColor === discs[2].style.backgroundColor
+        && discs[0].style.backgroundColor === discs[3].style.backgroundColor;
 }
 
-function checkDirections(i, j, direction) {
+function checkDirections(line, column, direction) {
     const discs = [];
-    for (let k = 0; k < 4; ++k) {
-        const row = i + k * direction[0];
-        const col = j + k * direction[1];
+    for (let i = 0; i < 4; ++i) {
+        const row = line + i * direction[0];
+        const col = column + i * direction[1];
         const id = `${row},${col}`;
         const disc = document.getElementById(id);
         if (disc) {
-            discs[k] = disc;
+            discs[i] = disc;
         }
     }
-    return discs.length === 4
-        && checkConnect(discs[0], discs[1], discs[2], discs[3]);
+    return discs.length === 4 && checkConnect(discs);
 }
 
 function checkWinner() {
@@ -57,8 +56,8 @@ function checkWinner() {
     ];
     for (let i = 0; i < lines; ++i) {
         for (let j = 0; j < columns; ++j) {
-            for (let d = 0; d < directions.length && !gameOver; ++d) {
-                if (checkDirections(i, j, directions[d])) {
+            for (let k = 0; k < directions.length && !gameOver; ++k) {
+                if (checkDirections(i, j, directions[k])) {
                     gameOver = true;
                 }
             }
