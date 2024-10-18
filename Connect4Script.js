@@ -30,10 +30,13 @@ function createGame(button) {
 }
 
 function checkConnect(discs) {
-    return discs[0].style.backgroundColor
-        && discs[0].style.backgroundColor === discs[1].style.backgroundColor
-        && discs[0].style.backgroundColor === discs[2].style.backgroundColor
-        && discs[0].style.backgroundColor === discs[3].style.backgroundColor;
+    for (let i = 1; i < discs.length; ++i) {
+        if (!discs[i].style.backgroundColor
+            || discs[i].style.backgroundColor !== discs[i - 1].style.backgroundColor) {
+            return false;
+        }
+    }
+    return true;
 }
 
 function checkDirections(line, column, direction) {
